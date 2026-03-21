@@ -1,3 +1,3 @@
-bib_id;public_name;database;available;word_placeholder;definition_placeholder
-2;"Термины из математики";"math_terms";1;"Термин";"Определение"
-3;"Страны и столицы";"countries";1;"Столица";"Страна"
+category_id;public_name;database;available;word_title;definition_title
+1;Термины из математики;math_terms;1;Термин;Определение
+2;Страны и столицы;countries;1;Столица;Страна
