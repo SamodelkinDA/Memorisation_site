@@ -5,35 +5,30 @@
 {% endblock %}
 
 {% block page-title %}
-Статистика по терминам
+Статистика по библиотеке карточек
 {% endblock %}
 
 {% block page-lead %}
-Перед тем, как отрендерить эту страницу, веб-приложение ходит в файл/БД, обновляет статистики, а затем подставляет их в шаблон страницы.
-Всё это можно посмотреть в файле <code>views.py</code>.
+Здесь приведены ключевые числа нашего проекта
 {% endblock %}
 
 {% block content %}
 <div class="container px-4 py-5" id="stats">
     <div>
-        <h3 class="py-2">Количество терминов</h3>
+        <h3 class="py-2">Количество категорий: </h3>
     </div>
     <div class="row text-center">
         <div class="col-md-4">
-            <h4>{{ terms_all }}</h4>
+            <h4>{{ categories_number }}</h4>
             <p class="text-muted">всего</p>
         </div>
         <div class="col-md-4">
-            <h4>{{ terms_own }}</h4>
-            <p class="text-muted">изначально бывших в базе</p>
-        </div>
-        <div class="col-md-4">
-            <h4>{{ terms_added }}</h4>
-            <p class="text-muted">добавленных через <a href="/add-term">форму добавления термина</a></p>
+            <h4>{{ your_categories_number }}</h4>
+            <p class="text-muted">добавленных вами</p>
         </div>
     </div>
     <div>
-        <h3 class="py-2">Описания</h3>
+        <h3 class="py-2">Статистика по категориям: </h3>
     </div>
     <div class="row text-center">
         <div class="col-md-4">

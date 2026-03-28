@@ -93,7 +93,7 @@ def add_new_category(request):
     return render(request, "new_category.html", context)
 
 def show_stats(request):
-    stats = terms_work.get_terms_stats()
+    stats = categories_work.get_categories_stats(user_id=-1)
     return render(request, "stats.html", stats)
 
 def term_list_category_selection(request):
