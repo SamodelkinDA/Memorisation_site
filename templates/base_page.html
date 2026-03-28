@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    
 
     <!-- load static -->
     {% load static %}
@@ -17,6 +16,235 @@
         {% block title_suffix %}
         {% endblock %}
     </title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #e6f0ff 0%, #f0e6ff 100%);
+        }
+        
+        .container {
+            border-radius: 30px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #0066cc 0%, #ff8c42 100%);
+            padding: 15px 20px;
+            border-radius: 30px 30px 0 0;
+        }
+        
+        header a {
+            color: white !important;
+        }
+        
+        header span {
+            color: white;
+            font-weight: bold;
+        }
+        
+        #title-box {
+            background: linear-gradient(135deg, #0066cc 0%, #ff8c42 100%) !important;
+            border-radius: 20px;
+            margin: 20px 0;
+            color: white;
+        }
+        
+        #title-box h1,
+        #title-box p {
+            color: white;
+        }
+        
+        .bg-light {
+            background: linear-gradient(135deg, #0066cc 0%, #ff8c42 100%) !important;
+        }
+        
+        .btn-primary {
+            background-color: #ff8c42;
+            border-color: #ff8c42;
+            border-radius: 20px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .btn-outline-primary {
+            color: #0066cc;
+            border-color: #0066cc;
+            border-radius: 20px;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0066cc;
+            border-color: #0066cc;
+        }
+        
+        .card {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,102,204,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,102,204,0.2);
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, #0066cc 0%, #ff8c42 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+        }
+        
+        .form-control {
+            border-radius: 20px;
+            border: 1px solid #0066cc;
+        }
+        
+        .form-control:focus {
+            border-color: #ff8c42;
+            box-shadow: 0 0 0 0.2rem rgba(255,140,66,0.25);
+        }
+        
+        .list-group-item {
+            border-radius: 15px !important;
+            margin-bottom: 5px;
+            border: 1px solid rgba(0,102,204,0.2);
+        }
+        
+        .list-group-item:hover {
+            background-color: rgba(0,102,204,0.05);
+        }
+        
+        .alert {
+            border-radius: 20px;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #ff8c42;
+        }
+        
+        .footer {
+            border-radius: 0 0 30px 30px;
+            padding: 20px;
+            background: linear-gradient(90deg, #0066cc 0%, #ff8c42 100%);
+            color: white !important;
+        }
+        
+        .footer a {
+            color: white !important;
+        }
+        
+        .pagination .page-link {
+            border-radius: 15px;
+            margin: 0 3px;
+            color: #0066cc;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(90deg, #0066cc 0%, #ff8c42 100%);
+            border-color: #ff8c42;
+        }
+        
+        .badge {
+            border-radius: 15px;
+            padding: 5px 10px;
+        }
+        
+        .badge-primary {
+            background: linear-gradient(90deg, #0066cc 0%, #ff8c42 100%);
+        }
+        
+        button, .btn {
+            border-radius: 20px !important;
+        }
+        
+        img[alt="Memo"] {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Стили для 4 градиентных карточек */
+        #project-contents {
+            margin: 0;
+            padding: 0;
+        }
+
+        .gradient-card {
+            background: linear-gradient(135deg, #0066cc 0%, #ff8c42 100%);
+            height: 100%;
+            width: 90%;
+            padding: 2rem;
+            margin: 5%;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gradient-card:hover {
+            transform: scale(1.02);
+        }
+
+        .gradient-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gradient-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon-wrapper {
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .icon-wrapper svg {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .gradient-card h3 {
+            color: white;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .gradient-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .btn-outline-light {
+            border: 2px solid white;
+            color: white;
+            border-radius: 30px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-light:hover {
+            background-color: white;
+            color: #0066cc;
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
 <main>
@@ -31,17 +259,21 @@
         </header>
         <div class="p-5 mb-4 bg-light rounded-3" id="title-box">
             <div class="container-fluid py-5">
-                <h1 class="display-1 fw-bold">{% block page-title %}{% endblock %}</h1>
-                <p class="col-md-8 fs-4">{% block page-lead %}{% endblock %}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div>
+                        <h1 class="display-1 fw-bold">{% block page-title %}{% endblock %}</h1>
+                        <p class="col-md-8 fs-4">{% block page-lead %}{% endblock %}</p>
+                    </div>
+                    {% block page-lead-image %}
+                    {% endblock %}
+                </div>               
             </div>
         </div>
         {% block content %}
-        
-        
-        
         {% endblock %}
         <footer class="footer pt-3 mt-4 text-muted border-top">© 2026</footer>
     </div>
+    
 </main>
 </body>
 </html>
