@@ -2,11 +2,21 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{% block pagetitle %}{% endblock %}</title>
+    
+
     <!-- load static -->
     {% load static %}
     <!-- CSS -->
     <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet">
+
+    <link rel="icon" type="image/svg+xml" href="{% static 'brain.svg' %}" alt="Memo" width="32" height="32"/>
+    <title>
+        {% block title %}
+            Memo  
+        {% endblock %}
+        {% block title_suffix %}
+        {% endblock %}
+    </title>
 </head>
 <body>
 <main>
@@ -14,8 +24,8 @@
         <header class="border-bottom">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
                 <div class="fs-2 mb-3">
-                    <img src="{% static 'calculator.svg' %}" alt="Проект про математику" width="32" height="32"/>
-                    <span>Проект про математику</span>
+                    <img src="{% static 'brain.svg' %}" alt="Memo" width="32" height="32"/>
+                    <span>Memo</span>
                 </div>
             </a>
         </header>
@@ -25,8 +35,12 @@
                 <p class="col-md-8 fs-4">{% block page-lead %}{% endblock %}</p>
             </div>
         </div>
-        {% block content %}{% endblock %}
-        <footer class="footer pt-3 mt-4 text-muted border-top">© 2023</footer>
+        {% block content %}
+        
+        
+        
+        {% endblock %}
+        <footer class="footer pt-3 mt-4 text-muted border-top">© 2026</footer>
     </div>
 </main>
 </body>

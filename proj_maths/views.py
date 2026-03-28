@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.core.cache import cache
 from . import terms_work
 from . import categories_work
+from . import sourses_work
 
 
 def index(request):
@@ -41,11 +42,57 @@ def send_term(request):
         add_term(request)
 
 
+def send_new_category(request):
+    context = {"request_answer" : True}
+    if request.method == "POST":
+        cache.clear()
+        user_name = request.POST.get("name")
+        user_email = request.POST.get("email")
+        new_categoty_name = request.POST.get("new_categoty_name", "")
+        new_categoty_word_title = request.POST.get("new_categoty_word_title", "").replace(";", ",")
+        new_categoty_definition_title = request.POST.get("new_categoty_definition_title", "").replace(";", ",")
+        context["success"] = False
+        context["request_answer"] = True
+        if len(new_categoty_name) == 0:
+            context["comment"] = "Добавьте название"
+        elif len(new_categoty_name) > 30:
+            context["comment"] = "Слишком длинное название"
+        elif len(new_categoty_word_title) == 0:
+            context["comment"] = "Добавьте название для запоминаемых слов"
+        elif len(new_categoty_word_title) > 30:
+            context["comment"] = "Название для запоминаемых слов слишком длинное"
+        elif len(new_categoty_definition_title) == 0:
+            context["comment"] = "Добавьте название для фраз-определений"
+        elif len(new_categoty_definition_title) > 30:
+            context["comment"] = "Название для фраз-определений слишком длинное"
+        else:
+            
+            source_id = sourses_work.get_source({
+                'name': user_name,
+                'email': user_email
+            })
+            if source_id > 0:
+                success = categories_work.add_new_category({'id': "-1",
+                                            'name': new_categoty_name,
+                                            'filename': "", 
+                                            'available' : "1",
+                                            'word_title': new_categoty_word_title,
+                                            'definition_title': new_categoty_definition_title,
+                                            'sourse_id': source_id})
+                if success:
+                    context["success"] = True
+                    context["comment"] = "Новая категория успешно создана"
+        return render(request, "new_category.html", context)
+    else:
+        return add_new_category(request)
+
+def add_new_category(request):
+    context ={"request_answer" : False}
+    return render(request, "new_category.html", context)
+
 def show_stats(request):
     stats = terms_work.get_terms_stats()
     return render(request, "stats.html", stats)
-
-
 
 def term_list_category_selection(request):
     category_id = request.GET.get('category_id')

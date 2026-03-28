@@ -4,14 +4,15 @@ def get_category_info(target_category_id : str = "1") -> dict:
     with open("./data/biblios.csv", "r", encoding="utf-8") as biblios_file:
         for line in biblios_file.readlines()[1:]:
             category_id, public_name, filename, available, \
-                  word_title, definition_title = line.split(";")
+                  word_title, definition_title, sourse_id = line.split(";")
             if category_id == target_category_id and available == "1":
                 target_category_info = {'id': category_id,
                                         'name': public_name,
                                         'filename': filename, 
                                         'available' : available,
                                         'word_title': word_title,
-                                        'definition_title': definition_title}
+                                        'definition_title': definition_title,
+                                        'sourse_id': sourse_id}
     return target_category_info 
     
 def get_list_of_categories() -> list:
@@ -19,10 +20,14 @@ def get_list_of_categories() -> list:
     with open("./data/biblios.csv", "r", encoding="utf-8") as biblios_file:
         for line in biblios_file.readlines()[1:]:
             category_id, public_name, filename, available, \
-                  word_title, definition_title = line.split(";")
+                  word_title, definition_title, sourse_id = line.split(";")
             if available == "1":
                 categories.append((category_id, public_name))
     return categories
+
+def add_new_category(new_category_info : dict) -> bool:
+    return True
+
 
 
 def write_term(new_term, new_definition):

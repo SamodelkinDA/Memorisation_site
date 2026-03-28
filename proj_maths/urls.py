@@ -23,5 +23,7 @@ urlpatterns = [
     path('terms-list-category-selection', views.term_list_category_selection),
     path('add-term', views.add_term),
     path('send-term', views.send_term),
+    path('send-new-category', views.send_new_category),
+    path('add-new-category', views.add_new_category),
     path('stats', views.show_stats)
 ]

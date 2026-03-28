@@ -1,0 +1,66 @@
+{% extends "base_page.html" %}
+
+{% block title_suffix %}
+ | Новая категория
+{% endblock %}
+
+{% block page-title %}
+Новый набор карточек
+{% endblock %}
+
+{% block page-lead %}
+Здесь вы можете создать свой набор карточек
+{% endblock %}
+
+
+{% block content %}
+
+{% if request_answer %}
+    <div class="alert alert-info" role="alert">
+        {% if success %}
+        Новая категория успешно создана. <a href="/terms-list" class="btn btn-primary">Добавить карточки</a>
+        {% else %}
+        Ошибка добавления {{ comment }}
+        {% endif %}
+    </div> 
+{% endif %}
+
+
+<div class="container-sm px-5 py-5" id="term-form">
+    <form method="post">
+        <div class="row px-5 py-2">
+            <h3>Ваши контактные данные</h3>
+        </div>
+        <div class="row px-5 py-2">
+            <div class="col-md-6">
+                <label for="name">Ваше имя:</label>
+                <input type="text" class="form-control input-lg" name="name" id="name" placeholder="Иван" value required>
+            </div>
+            <div class="col-md-6">
+                <label for="email">Ваш контактный email:</label>
+                <input type="text" class="form-control input-lg" name="email" id="email" placeholder="ivan@ivanov.com" value required>
+            </div>
+        </div>
+        <div class="row px-5 py-2">
+            <h3>Новый набор карточек</h3>
+        </div>
+        <div class="row px-5 py-2">
+            <div class="col-md-4">
+                <label for="new_categoty_name">Название новой категории</label>
+                <input type="text" class="form-control input-lg" name="new_categoty_name" id="new_categoty_name">
+            </div>
+            <div class="col-md-4">
+                <label for="new_categoty_word_title">Название для запоминаемых слов</label>
+                <input type="text" class="form-control input-lg" name="new_categoty_word_title" id="new_categoty_word_title">
+            </div>
+            <div class="col-md-4">
+                <label for="new_categoty_definition_title">Название для фраз-определений</label>
+                <input type="text" class="form-control input-lg" name="new_categoty_definition_title" id="new_categoty_definition_title">
+            </div>
+        </div>
+        <div class="row px-5 py-2">
+            <button type="submit" class="btn btn-primary" formaction="/send-new-category">Отправить</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
