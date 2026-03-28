@@ -72,16 +72,18 @@ def send_new_category(request):
                 'email': user_email
             })
             if source_id > 0:
-                success = categories_work.add_new_category({'id': "-1",
+                res = categories_work.add_new_category({'id': "-1",
                                             'name': new_categoty_name,
                                             'filename': "", 
                                             'available' : "1",
                                             'word_title': new_categoty_word_title,
                                             'definition_title': new_categoty_definition_title,
                                             'sourse_id': source_id})
-                if success:
+                if res['success']:
                     context["success"] = True
                     context["comment"] = "Новая категория успешно создана"
+                else: 
+                    context["comment"] = res["error_string"]
         return render(request, "new_category.html", context)
     else:
         return add_new_category(request)

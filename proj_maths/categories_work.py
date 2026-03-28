@@ -25,44 +25,54 @@ def get_list_of_categories() -> list:
                 categories.append((category_id, public_name))
     return categories
 
-def add_new_category(new_category_info : dict) -> bool:
-    return True
+def add_new_category(new_category_info : dict) -> dict:
+    result = {
+        "success": True,
+        "error_string" : ""
+    }
+    max_category_id = 0
+    with open("./data/biblios.csv", "r", encoding="utf-8") as biblios_file:
+        for line in biblios_file.readlines()[1:]:
+            category_id, public_name, filename, available, \
+                    word_title, definition_title, sourse_id = line.split(";")
+            if int(category_id) > max_category_id:
+                max_category_id = int(category_id)
+            if public_name == new_category_info['name']:
+                result = {
+                    "success": False,
+                    "error_string" : "Категория с таким названием уже существует"
+                }
+                break
+    if result['success']:
+        with open("./data/biblios.csv", "a", encoding="utf-8") as biblios_file:
+            biblios_file.write("\n" + f"{max_category_id + 1};{new_category_info['name']};" +
+                            f"{str(max_category_id + 1)};1;{new_category_info['word_title']};" +
+                                f"{new_category_info['definition_title']};{new_category_info['sourse_id']}")
+        with open(f'./data/{max_category_id + 1}.csv', 'x') as f:
+            f.write("id;word;definition;sourse_id")
+    return result
 
-
-
-def write_term(new_term, new_definition):
-    new_term_line = f"{new_term};{new_definition};user"
-    with open("./data/terms.csv", "r", encoding="utf-8") as f:
-        existing_terms = [l.strip("\n") for l in f.readlines()]
-        title = existing_terms[0]
-        old_terms = existing_terms[1:]
-    terms_sorted = old_terms + [new_term_line]
-    terms_sorted.sort()
-    new_terms = [title] + terms_sorted
-    with open("./data/terms.csv", "w", encoding="utf-8") as f:
-        f.write("\n".join(new_terms))
-
-
-def get_terms_stats():
-    db_terms = 0
-    user_terms = 0
-    defin_len = []
-    with open("./data/terms.csv", "r", encoding="utf-8") as f:
-        for line in f.readlines()[1:]:
-            term, defin, added_by = line.split(";")
-            words = defin.split()
-            defin_len.append(len(words))
-            if "user" in added_by:
-                user_terms += 1
-            elif "db" in added_by:
-                db_terms += 1
+def get_categories_stats(user_id):
+    categories_number = 0
+    your_categories_number = 0
+    cards_numbers = []
+    with open("./data/biblios.csv", "r", encoding="utf-8") as bib_file:
+        for line in bib_file.readlines()[1:]:
+            ategory_id, public_name, filename, available, \
+                  word_title, definition_title, sourse_id = line.split(";")
+            if available:
+                categories_number += 1
+                if user_id == sourse_id:
+                    your_categories_number += 1
+                with open(f"./data/{filename}.csv", "r", encoding="utf-8") as category_file:
+                    cards_numbers.append(len(category_file.readlines()) - 1)
+    
     stats = {
-        "terms_all": db_terms + user_terms,
-        "terms_own": db_terms,
-        "terms_added": user_terms,
-        "words_avg": sum(defin_len)/len(defin_len),
-        "words_max": max(defin_len),
-        "words_min": min(defin_len)
+        "categories_number": categories_number,
+        "your_categories_number": your_categories_number,
+        "words_avg": sum(cards_numbers)/len(cards_numbers),
+        "words_max": max(cards_numbers),
+        "words_min": min(cards_numbers)
     }
     return stats
 
