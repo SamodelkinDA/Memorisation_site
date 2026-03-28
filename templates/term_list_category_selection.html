@@ -1,11 +1,15 @@
 {% extends "base_page.html" %}
 
+{% block title_suffix %}
+ | Библиотека 
+{% endblock %}
+
 {% block page-title %}
-Список терминов
+БИБЛИОТЕКА
 {% endblock %}
 
 {% block page-lead %}
-Все термины извлекаются из БД/файла и динамически вставляются в таблицу.
+Здесь вы можете изучить или повторить все карточки
 {% endblock %}
 
 {% block content %}
@@ -31,7 +35,7 @@
     {% if terms %}
     <div class="alert alert-info" role="alert">
         {% if selected_category_info %}
-        Показаны термины из категории {{ selected_category_info.name }}. Всего: {{ terms|length }}
+        Показаны карточки из категории {{ selected_category_info.name }}. Всего: {{ terms|length }}
         {% endif %}
     </div>
     
@@ -60,7 +64,7 @@
         {% if selected_category %}
         В выбранной категории нет терминов. Пожалуйста, выберите другую категорию.
         {% else %}
-        В базе данных нет терминов. Пожалуйста, добавьте термины.
+        В базе данных нет карточек. Пожалуйста, создайте новый набор карточек.
         {% endif %}
     </div>
     {% endif %}

@@ -10,7 +10,6 @@ def get_terms_for_table():
 
 def get_terms_in_category_for_table(category_info : dict):
     terms = []
-    print(category_info)
     with open(f"./data/{category_info['filename']}.csv", "r", encoding="utf-8") as f:
         for line in f.readlines()[1:]:
             id, term, definition, source = line.split(";")
