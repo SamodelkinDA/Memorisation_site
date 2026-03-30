@@ -43,12 +43,12 @@
             {% if terms %}
             <div class="d-flex justify-content-between">
                 <h4>Показаны карточки из категории {{ selected_category_info.name }}. Всего: {{ terms|length }}</h4>
-                <a href="/add-term" class="btn btn-outline-light">Добавить</a>
+                <a href="/add-term?category_id={{ selected_category_info.id }}" class="btn btn-outline-light">Добавить</a>
             </div>
             {% else %}
             <div class="d-flex justify-content-between">
                 <h4>В выбранной категории отсутствуют карточки</h4>
-                <a href="/add-term" class="btn btn-outline-light">Добавить</a>
+                <a href="/add-term?category_id={{ selected_category_info.id }}" class="btn btn-outline-light">Добавить</a>
             </div>
             {% endif %}
         </div>

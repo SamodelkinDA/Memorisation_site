@@ -136,14 +136,16 @@ def send_new_category(request):
                 if res['success']:
                     context["success"] = True
                     context["comment"] = "Новая категория успешно создана"
+                    context["new_category_id"] = res["category_id"]
                 else: 
                     context["comment"] = res["error_string"]
-        return render(request, "new_category.html", context)
+        request.session['send_category_response'] = context
+        return redirect(f"/add-new-category")
     else:
-        return add_new_category(request)
+        return redirect(f"/add-new-category")
 
 def add_new_category(request):
-    context ={"request_answer" : False}
+    context = request.session.pop("send_category_response", {}) 
     return render(request, "new_category.html", context)
 
 def show_stats(request):

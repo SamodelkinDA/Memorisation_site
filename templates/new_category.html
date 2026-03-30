@@ -18,7 +18,7 @@
 {% if request_answer %}
     <div class="alert alert-info" role="alert">
         {% if success %}
-        Новая категория успешно создана. <a href="/terms-list" class="btn btn-primary">Добавить карточки</a>
+        Новая категория успешно создана. <a href="/add-term?category_id={{new_category_id}}" class="btn btn-primary">Добавить карточки</a>
         {% else %}
         Ошибка добавления {{ comment }}
         {% endif %}

@@ -50,6 +50,7 @@ def add_new_category(new_category_info : dict) -> dict:
                                 f"{new_category_info['definition_title']};{new_category_info['sourse_id']}")
         with open(f'./data/{max_category_id + 1}.csv', 'x') as f:
             f.write("id;word;definition;sourse_id")
+        result['category_id'] = f'{max_category_id + 1}'
     return result
 
 def get_categories_stats(user_id):
