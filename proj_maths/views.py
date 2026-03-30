@@ -101,7 +101,13 @@ def term_list_category_selection(request):
     
     categories = categories_work.get_list_of_categories()
     if not categories:
-        pass    # TODO обработка отсутствия категорий вообще
+        terms = []
+        context = {
+            'terms': terms,
+            'categories': categories,
+            'selected_category_info': {},
+        }
+        return render(request, 'term_list_category_selection.html', context)
     
     # Если не определена выбранная категория
     if not (category_id and category_id != ''):
