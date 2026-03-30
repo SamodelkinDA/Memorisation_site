@@ -5,15 +5,30 @@
 {% endblock %}
 
 {% block page-lead %}
-Когда вы нажмёте на кнопку &laquo;Отправить&raquo;, веб-приложению отправится POST-запрос.
-При этом в полях <span class="fst-italic">Имя</span> и <span class="fst-italic">Email</span> есть атрибут
-<code>value required</code>, который подсказывает пользователю о необходимости заполнения — это свойство Bootstrap.
+
 {% endblock %}
 
 
 {% block content %}
+<div class="container px-4 py-3">
+    <div class="row">
+        <div class="col-md-6">
+            <form method="get" action="" id="category-form">
+                <label for="category-select" class="form-label fw-bold">Выберите категорию:</label>
+                <select id="category-select" name="category_id" class="form-select" onchange="this.form.submit()">
+                    {% for category_id, category_name in categories %}
+                    <option value="{{ category_id }}" {% if selected_category_info.id == category_id %}selected{% endif %}>
+                        {{ category_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="container-sm px-5 py-5" id="term-form">
-    <form method="post">
+    <form method="post" action="/send-term">
         <div class="row px-5 py-2">
             <h3>Ваши контактные данные</h3>
         </div>
@@ -27,23 +42,59 @@
                 <input type="text" class="form-control input-lg" name="email" id="email" placeholder="ivan@ivanov.com" value required>
             </div>
         </div>
-        <div class="row px-5 py-2">
-            <h3>Ваш термин</h3>
-        </div>
-        <div class="row px-5 py-2">
-            <div class="col-md-4">
-                <label for="new_term">Термин</label>
-                <input type="text" class="form-control input-lg" name="new_term" id="new_term">
+
+        {% if categories %}
+            {% if selected_category_info %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                        <th scope="col" class="py-3">#</th>
+                        <th scope="col" class="py-3">{{ selected_category_info.word_title }}</th>
+                        <th scope="col" class="py-3">{{ selected_category_info.definition_title }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cnt, word, definition in terms %}
+                        <tr>
+                            <td class="py-3">{{ cnt }}</td>
+                            <td class="py-3">{{ word }}</td>
+                            <td class="py-3">{{ definition }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="py-3">
+                                <button type="submit" class="btn btn-primary">Добавить</button>
+                            </td>
+                            <td class="py-3">
+                                <input type="text" class="form-control input-lg" name="word" id="word" placeholder="Париж" value required>
+                            </td>
+                            <td class="py-3">
+                                <input type="text" class="form-control input-lg" name="definition" id="definition" placeholder="Столица Франции" value required>
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <input type="hidden" name="category_id_post" id="category_id_post" value="{{ selected_category_info.id }}">
+                {% if request_answer %}
+                <div class="alert alert-info" role="alert">
+                    {% if success %}
+                        <h4>Успех: {{ comment }}</h4>
+                    {% else %}
+                        <h4>Не удалось добавить карточку: {{ comment }}</h4>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% endif %}
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <div class="d-flex justify-content-between">
+                <h4>В библиотеке отсутствуют категории</h4>
+                <a href="/add-new-category" class="btn btn-outline-light">Создать</a>
             </div>
-            <div class="col-md-8">
-                <label for="new_definition">Объяснение термина</label>
-                <textarea type="text" class="form-control input-lg" name="new_definition" id="new_definition" aria-describedby="definition_note" rows="3"></textarea>
-                <div id="definition_note" class="form-text">Постарайтесь уложиться в одно, максимум два предложения</div>
-            </div>
         </div>
-        <div class="row px-5 py-2">
-            <button type="submit" class="btn btn-primary" formaction="/send-term">Отправить</button>
-        </div>
+        {% endif %}
     </form>
 </div>
 {% endblock %}

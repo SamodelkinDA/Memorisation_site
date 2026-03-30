@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.core.cache import cache
 from . import terms_work
 from . import categories_work
@@ -15,40 +15,94 @@ def terms_list(request):
 
 
 def add_term(request):
-    return render(request, "term_add.html")
+    category_id = request.GET.get('category_id')
+    categories = categories_work.get_list_of_categories()
+    if not categories:
+        terms = []
+        context = {
+            'terms': terms,
+            'categories': categories,
+            'selected_category_info': {},
+        }
+        return render(request, 'term_add.html', context)
+    
+    context = request.session.pop("send_term_response", {})
+
+    # Если не определена выбранная категория
+    if not (category_id and category_id != ''):
+        category_id = "1"
+
+    selected_category_info = categories_work.get_category_info(category_id)
+
+    # Если выбранная категория не существует или не ликвидна
+    if not selected_category_info:
+        category_id = "1"
+        selected_category_info = categories_work.get_category_info(category_id)
+    
+    terms = terms_work.get_terms_in_category_for_table(selected_category_info)
+    context = context | {
+        'terms': terms,
+        'categories': categories,
+        'selected_category_info': selected_category_info,
+    }
+    return render(request, "term_add.html", context)
 
 
 def send_term(request):
+    context = {}
+    print(request.method)
     if request.method == "POST":
         cache.clear()
-        user_name = request.POST.get("name")
-        new_term = request.POST.get("new_term", "")
-        new_definition = request.POST.get("new_definition", "").replace(";", ",")
-        context = {"user": user_name}
-        if len(new_definition) == 0:
-            context["success"] = False
-            context["comment"] = "Описание должно быть не пустым"
-        elif len(new_term) == 0:
-            context["success"] = False
-            context["comment"] = "Термин должен быть не пустым"
+        category_id = request.POST.get('category_id_post')
+        user_name = request.POST.get("name").replace(";", ",")
+        user_email = request.POST.get("email").replace(";", ",")
+        new_word = request.POST.get("word", "").replace(";", ",")
+        new_definition = request.POST.get("definition", "").replace(";", ",")
+        context["success"] = False
+        context["request_answer"] = True
+        context['target_category_id'] = category_id
+        if len(new_word) == 0:
+            context["comment"] = "Добавьте слово"
+        elif len(new_word) > 30:
+            context["comment"] = "Слишком длинное слово"
+        elif len(new_definition) == 0:
+            context["comment"] = "Добавьте определение"
+        elif len(new_definition) > 300:
+            context["comment"] = "Слишком длинное слово определение"
         else:
-            context["success"] = True
-            context["comment"] = "Ваш термин принят"
-            terms_work.write_term(new_term, new_definition)
-        if context["success"]:
-            context["success-title"] = ""
-        return render(request, "term_request.html", context)
+            source_id = sourses_work.get_source({
+                    'name': user_name,
+                    'email': user_email
+                })
+            
+            category_info = categories_work.get_category_info(category_id)
+
+            if category_info:
+                new_word_info = {
+                    'category_db_filename' : category_info['filename'],
+                    'word' : new_word,
+                    'definition': new_definition,
+                    'source_id': source_id
+                }
+                res = terms_work.add_term_to_db(new_word_info)
+                if res['success']:
+                    context["success"] = True
+                    context["comment"] = "Новое слово добавлено"
+                else: 
+                    context["comment"] = res["error_string"]
+        request.session['send_term_response'] = context
+        return redirect(f"/add-term?category_id={category_id}")
     else:
-        add_term(request)
+        return redirect(f"/add-term")
 
 
 def send_new_category(request):
-    context = {"request_answer" : True}
+    context = {}
     if request.method == "POST":
         cache.clear()
-        user_name = request.POST.get("name")
-        user_email = request.POST.get("email")
-        new_categoty_name = request.POST.get("new_categoty_name", "")
+        user_name = request.POST.get("name").replace(";", ",")
+        user_email = request.POST.get("email").replace(";", ",")
+        new_categoty_name = request.POST.get("new_categoty_name", "").replace(";", ",")
         new_categoty_word_title = request.POST.get("new_categoty_word_title", "").replace(";", ",")
         new_categoty_definition_title = request.POST.get("new_categoty_definition_title", "").replace(";", ",")
         context["success"] = False

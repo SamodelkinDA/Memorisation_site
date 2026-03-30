@@ -1,13 +1,3 @@
-def get_terms_for_table():
-    terms = []
-    with open("./data/terms.csv", "r", encoding="utf-8") as f:
-        cnt = 1
-        for line in f.readlines()[1:]:
-            term, definition, source = line.split(";")
-            terms.append([cnt, term, definition])
-            cnt += 1
-    return terms
-
 def get_terms_in_category_for_table(category_info : dict):
     terms = []
     with open(f"./data/{category_info['filename']}.csv", "r", encoding="utf-8") as f:
@@ -16,39 +6,18 @@ def get_terms_in_category_for_table(category_info : dict):
             terms.append([id, term, definition])
     return terms
 
-
-def write_term(new_term, new_definition):
-    new_term_line = f"{new_term};{new_definition};user"
-    with open("./data/terms.csv", "r", encoding="utf-8") as f:
-        existing_terms = [l.strip("\n") for l in f.readlines()]
-        title = existing_terms[0]
-        old_terms = existing_terms[1:]
-    terms_sorted = old_terms + [new_term_line]
-    terms_sorted.sort()
-    new_terms = [title] + terms_sorted
-    with open("./data/terms.csv", "w", encoding="utf-8") as f:
-        f.write("\n".join(new_terms))
-
-
-def get_terms_stats():
-    db_terms = 0
-    user_terms = 0
-    defin_len = []
-    with open("./data/terms.csv", "r", encoding="utf-8") as f:
-        for line in f.readlines()[1:]:
-            term, defin, added_by = line.split(";")
-            words = defin.split()
-            defin_len.append(len(words))
-            if "user" in added_by:
-                user_terms += 1
-            elif "db" in added_by:
-                db_terms += 1
-    stats = {
-        "terms_all": db_terms + user_terms,
-        "terms_own": db_terms,
-        "terms_added": user_terms,
-        "words_avg": sum(defin_len)/len(defin_len),
-        "words_max": max(defin_len),
-        "words_min": min(defin_len)
+def add_term_to_db(new_word_info : dict) -> dict:
+    result = {
+        "success": True,
+        "error_string" : ""
     }
-    return stats
+    max_word_id = 0
+    with open(f"./data/{new_word_info['category_db_filename']}.csv", "r", encoding="utf-8") as f:
+        for line in f.readlines()[1:]:
+            id, word, definition, sourse_id = line.split(";")
+            if int(id) > max_word_id:
+                max_word_id = int(id)
+    new_term_line = f"\n{max_word_id + 1};{new_word_info['word']};{new_word_info['definition']};{new_word_info['source_id']}"
+    with open(f"./data/{new_word_info['category_db_filename']}.csv", "a", encoding="utf-8") as f:
+        f.write(new_term_line)
+    return result
