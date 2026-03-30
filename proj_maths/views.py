@@ -9,11 +9,6 @@ def index(request):
     return render(request, "index.html")
 
 
-def terms_list(request):
-    terms = terms_work.get_terms_for_table()
-    return render(request, "term_list.html", context={"terms": terms})
-
-
 def add_term(request):
     category_id = request.GET.get('category_id')
     categories = categories_work.get_list_of_categories()
