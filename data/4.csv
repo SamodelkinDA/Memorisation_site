@@ -1,3 +1,61 @@
 id;word;definition;sourse_id
 1;Oui;Yes;1
-2;S'il vous plait;Please ;1
+2;S'il vous plait;Please;1
+3;Merci;Thank you;1
+4;De rien;You're welcome;1
+5;Bonjour;Hello;1
+6;Bonsoir;Good evening;1
+7;Au revoir;Goodbye;1
+8;Bonne nuit;Good night;1
+9;Comment ca va?;How are you?;1
+10;Ca va bien;I'm fine;1
+11;Non;No;1
+12;D'accord;Okay;1
+13;Excusez-moi;Excuse me;1
+14;Je suis desole;I'm sorry;1
+15;Parlez-vous anglais?;Do you speak English?;1
+16;Je ne comprends pas;I don't understand;1
+17;Repetez s'il vous plait;Repeat please;1
+18;Combien ca coûte?;How much is it?;1
+19;Ou sont les toilettes?;Where is the bathroom?;1
+20;Je voudrais;I would like;1
+21;L'addition s'il vous plait;The check please;1
+22;Garcon;Waiter;1
+23;La carte;The menu;1
+24;Eau;Water;1
+25;Cafe;Coffee;1
+26;The;Tea;1
+27;Vin;Wine;1
+28;Bierre;Beer;1
+29;Pain;Bread;1
+30;Fromage;Cheese;1
+31;Poulet;Chicken;1
+32;Boeuf;Beef;1
+33;Poisson;Fish;1
+34;Legumes;Vegetables;1
+35;Fruits;Fruits;1
+36;Delicieux;Delicious;1
+37;Chaud;Hot;1
+38;Froid;Cold;1
+39;Grand;Big;1
+40;Petit;Small;1
+41;Bon;Good;1
+42;Mauvais;Bad;1
+43;Beau;Beautiful;1
+44;Laid;Ugly;1
+45;Content;Happy;1
+46;Triste;Sad;1
+47;Je t'aime;I love you;1
+48;Amitie;Friendship;1
+49;Famille;Family;1
+50;Maison;House;1
+51;Voiture;Car;1
+52;Chien;Dog;1
+53;Chat;Cat;1
+54;Soleil;Sun;1
+55;Lune;Moon;1
+56;Etoile;Star;1
+57;Pluie;Rain;1
+58;Neige;Snow;1
+59;Vent;Wind;1
+60;Mer;Sea;1
