@@ -38,6 +38,15 @@
         <div style="flex: 1; text-align: center;"> 
             <form method="post" style="display: inline">
                 {% csrf_token %}
+                <input type="hidden" name="action" value="reshaffle">
+                <button type="submit" style="padding: 8px 16px; cursor: pointer;" class="btn-in-games btn-active-idle"  >
+                    Перемешать заново
+                </button>
+            </form>
+        </div>
+        <div style="flex: 1; text-align: center;"> 
+            <form method="post" style="display: inline">
+                {% csrf_token %}
                 <input type="hidden" name="action" value="quit">
                 <button type="submit" style="padding: 8px 16px; cursor: pointer;" class="btn-in-games btn-active-idle"  >
                     Назад
