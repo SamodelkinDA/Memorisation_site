@@ -1,0 +1,125 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block page-title %}
+Соедините слова в пары
+{% endblock %}
+
+
+{% block content %}
+    <!-- Выпадающий список с автоматической отправкой формы -->
+    <div class="container px-4 py-3">
+        <div class="row">
+            <div class="col-md-6">
+                <form method="get" action="" id="category-form">
+                    <label for="category-select" class="form-label fw-bold">Выберите категорию:</label>
+                    <select id="category-select" name="category_id" class="form-select" onchange="this.form.submit()">
+                        {% for category_id, category_name in categories %}
+                        <option value="{{ category_id }}" {% if selected_category_info.id == category_id %}selected{% endif %}>
+                            {{ category_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 100px; margin-top: 30px;"> 
+        <div style="flex: 1; text-align: center;">    
+            <form method="post" style="display: inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reset">
+                <button type="submit" style="padding: 8px 16px; cursor: pointer;" class="btn-in-games btn-active-idle">
+                    Начать заново
+                </button>
+            </form>
+        </div>
+        <div style="flex: 1; text-align: center;"> 
+            <form method="post" style="display: inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="quit">
+                <button type="submit" style="padding: 8px 16px; cursor: pointer;" class="btn-in-games btn-active-idle"  >
+                    Назад
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Отображение сообщений -->
+    {% if message %}
+        <div class="alert alert-info" role="alert" style="flex: 1; text-align: center;">
+            <h4>{{ message }}</h4>
+        </div> 
+    {% endif %}
+    
+    <div style="display: flex; gap: 100px; margin-top: 30px;" id="game-section">
+        <!-- Левая колонка -->
+        <div style="flex: 1; text-align: center;">
+            <h2>{{ selected_category_info.definition_title }}</h2>
+            {% for word in left_words %}
+                <form method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="left_id" value="{{ word.id }}">
+                    <button type="submit" 
+                        name="left_selected"
+                        {% if current_st == 'ERROR' and left_id == word.id %}
+                            class="btn-in-games btn-active-incorrect"
+                        {% elif current_st == 'CORRECT' and left_id == word.id %}
+                            class="btn-in-games btn-active-correct"
+                        {% elif current_st == 'IDLE' and left_id == word.id %}
+                            class="btn-in-games btn-active-selected"
+                        {% elif word.status == 'removed' %}
+                            class="btn-in-games btn-inactive"
+                        {% else %}
+                            class="btn-in-games btn-active-idle"
+                        {% endif %}
+
+                        {% if word.status == 'removed' %}disabled{% endif %}>
+                        {{ word.text }}
+                    </button>
+                </form>
+            {% endfor %}
+        </div>
+        
+        <!-- Правая колонка -->
+        <div style="flex: 1; text-align: center">
+            <h2 >{{ selected_category_info.word_title }}</h2>
+            {% for word in right_words %}
+                    <form method="post" style="margin: 0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="right_id" value="{{ word.id }}">
+                        <button type="submit" 
+                            name="right_selected"
+                            {% if current_st == 'ERROR' and right_id == word.id %}
+                                class="btn-in-games btn-active-incorrect"
+                            {% elif current_st == 'CORRECT' and right_id == word.id %}
+                                class="btn-in-games btn-active-correct"
+                            {% elif current_st == 'IDLE' and right_id == word.id %}
+                                class="btn-in-games btn-active-selected"
+                            {% elif word.status == 'removed' %}
+                                class="btn-in-games btn-inactive"
+                            {% else %}
+                                class="btn-in-games btn-active-idle"
+                            {% endif %}
+
+                            {% if word.status == 'removed' %}disabled{% endif %}>
+                            {{ word.text }}
+                        </button>
+                    </form>
+            {% endfor %}
+        </div>
+    </div>
+    
+    
+    <div style="margin-top: 30px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+        <h3>Как играть:</h3>
+        <ol>
+            <li>Нажмите на слово в левой колонке</li>
+            <li>Нажмите на перевод в правой колонке</li>
+            <li>Если пара правильная - кнопки подсветятся зеленым</li>
+            <li>Если пара неправильная - кнопки подсветятся красным</li>
+            <li>Соедините все пары для победы!</li>
+        </ol>
+    </div>
+{% endblock %}

@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from . import views
+from . import game_views
 
 urlpatterns = [
     path('', views.index),
@@ -24,5 +25,6 @@ urlpatterns = [
     path('send-term', views.send_term),
     path('send-new-category', views.send_new_category),
     path('add-new-category', views.add_new_category),
-    path('stats', views.show_stats)
+    path('stats', views.show_stats),
+    path('pair-game', game_views.pair_game)
 ]

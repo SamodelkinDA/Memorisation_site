@@ -1,3 +1,4 @@
+import random
 def get_terms_in_category_for_table(category_info : dict):
     terms = []
     with open(f"./data/{category_info['filename']}.csv", "r", encoding="utf-8") as f:
@@ -21,3 +22,11 @@ def add_term_to_db(new_word_info : dict) -> dict:
     with open(f"./data/{new_word_info['category_db_filename']}.csv", "a", encoding="utf-8") as f:
         f.write(new_term_line)
     return result
+
+def select_terms_for_game(category_info : dict, max_number : int = 10):
+    terms = []
+    with open(f"./data/{category_info['filename']}.csv", "r", encoding="utf-8") as f:
+        for line in f.readlines()[1:]:
+            id, term, definition, source = line.split(";")
+            terms.append({'id': id, 'left': definition, 'right': term})
+    return random.sample(terms, min(max_number, len(terms)))
