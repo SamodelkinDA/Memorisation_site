@@ -26,5 +26,6 @@ urlpatterns = [
     path('send-new-category', views.send_new_category),
     path('add-new-category', views.add_new_category),
     path('stats', views.show_stats),
-    path('pair-game', game_views.pair_game)
+    path('pair-game', game_views.pair_game),
+    path('memo-game', game_views.memo_game)
 ]

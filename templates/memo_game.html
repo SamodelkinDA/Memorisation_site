@@ -1,0 +1,110 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block page-title %}
+Соедините слова в пары
+{% endblock %}
+
+
+{% block content %}
+    <!-- Выпадающий список с автоматической отправкой формы -->
+    <div class="container px-4 py-3">
+        <div class="row">
+            <div class="col-md-6">
+                <form method="get" action="" id="category-form">
+                    <label for="category-select" class="form-label fw-bold">Выберите категорию:</label>
+                    <select id="category-select" name="category_id" class="form-select" onchange="this.form.submit()">
+                        {% for category_id, category_name in categories %}
+                        <option value="{{ category_id }}" {% if selected_category_info.id == category_id %}selected{% endif %}>
+                            {{ category_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 100px; margin-top: 30px;"> 
+        <div style="flex: 1; text-align: center;">    
+            <form method="post" style="display: inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reset">
+                <button type="submit" style="padding: 8px 16px; cursor: pointer;" class="btn-in-games btn-active-idle">
+                    Начать заново
+                </button>
+            </form>
+        </div>
+        <div style="flex: 1; text-align: center;"> 
+            <form method="post" style="display: inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reshaffle">
+                <button type="submit" style="padding: 8px 16px; cursor: pointer;" class="btn-in-games btn-active-idle"  >
+                    Перемешать заново
+                </button>
+            </form>
+        </div>
+        <div style="flex: 1; text-align: center;"> 
+            <form method="post" style="display: inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="quit">
+                <button type="submit" style="padding: 8px 16px; cursor: pointer;" class="btn-in-games btn-active-idle"  >
+                    Назад
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Отображение сообщений -->
+    {% if message %}
+        <div class="alert alert-info" role="alert" style="flex: 1; text-align: center;">
+            <h4>{{ message }}</h4>
+        </div> 
+    {% endif %}
+    
+    <div style="display: grid;
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 20px; margin-top: 30px;" id="game-section">      
+        {% for card in cards %}
+            <form method="post" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="card_id" value="{{ card.id }}">
+                <button type="submit" 
+                    name="selected"
+                    {% if current_st == 'ERROR' and id1 == card.id or id2 == card.id and current_st == 'ERROR' %}
+                        class="btn-in-games btn-active-incorrect card-memo-game"
+                    {% elif current_st == 'CORRECT' and  id1 == card.id or id2 == card.id and current_st == 'CORRECT' %}
+                        class="btn-in-games btn-active-correct card-memo-game"
+                    {% elif current_st == 'IDLE' and  id1 == card.id or id2 == card.id and current_st == 'IDLE' %}
+                        class="btn-in-games btn-active-selected card-memo-game"
+                    {% elif card.status == 'removed' %}
+                        class="btn-in-games btn-inactive card-memo-game"
+                    {% else %}
+                        class="btn-in-games btn-active-idle card-memo-game"
+                    {% endif %}
+
+                    {% if card.status == 'removed' %}disabled{% endif %}>
+
+                    {% if id1 != card.id and id2 != card.id %}
+                        ???
+                    {% else %}
+                        {{ card.text }}
+                    {% endif %}
+                </button>
+            </form>
+        {% endfor %}
+        
+    </div>
+    
+    
+    <div style="margin-top: 30px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+        <h3>Как играть:</h3>
+        <ol>
+            <li>Выберите пару</li>
+            <li>Она покажет содержимое и перевернется</li>
+            <li>Если пара правильная - кнопки подсветятся зеленым</li>
+            <li>Если пара неправильная - кнопки подсветятся красным</li>
+            <li>Соедините все пары для победы!</li>
+        </ol>
+    </div>
+{% endblock %}
