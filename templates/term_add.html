@@ -34,11 +34,11 @@
         <div class="row px-5 py-2">
             <div class="col-md-6">
                 <label for="name">Ваше имя:</label>
-                <input type="text" class="form-control input-lg" name="name" id="name" placeholder="Иван" value required >
+                <input type="text" class="form-control input-lg" name="name" id="name" placeholder="Иван" value="{{ user_info.name }}" required >
             </div>
             <div class="col-md-6">
                 <label for="email">Ваш контактный email:</label>
-                <input type="text" class="form-control input-lg" name="email" id="email" placeholder="ivan@ivanov.com" value required>
+                <input type="text" class="form-control input-lg" name="email" id="email" placeholder="ivan@ivanov.com" value="{{ user_info.email }}" required>
             </div>
         </div>
 
@@ -77,7 +77,7 @@
                 </div>
                 <input type="hidden" name="category_id_post" id="category_id_post" value="{{ selected_category_info.id }}">
                 {% if request_answer %}
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-info" role="alert" id="input_place">
                     {% if success %}
                         <h4>Успех: {{ comment }}</h4>
                     {% else %}

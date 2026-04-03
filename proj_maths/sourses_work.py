@@ -17,4 +17,15 @@ def get_source(source_info : dict):
             sources_file.write(new_source)
         target_source = max_source_id + 1
 
-    return target_source
+    return str(target_source)
+
+def get_source_info(target_source_id : str) -> dict:
+    source_info = {}
+    with open("./data/sourses.csv", "r", encoding="utf-8") as sources_file:
+        for line in sources_file.readlines()[1:]:
+            source_id, sourse_name, sourse_email, rank = line.split(";")
+            if source_id == target_source_id:
+                source_info['name'] = sourse_name
+                source_info['email'] = sourse_email
+                break
+    return source_info

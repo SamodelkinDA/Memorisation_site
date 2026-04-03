@@ -22,6 +22,9 @@ def add_term(request):
         return render(request, 'term_add.html', context)
     
     context = request.session.pop("send_term_response", {})
+    user_id = request.session.get("user_id", "")
+    if user_id:
+        context['user_info'] = sourses_work.get_source_info(user_id)
 
     # Если не определена выбранная категория
     if not (category_id and category_id != ''):
@@ -45,7 +48,6 @@ def add_term(request):
 
 def send_term(request):
     context = {}
-    print(request.method)
     if request.method == "POST":
         cache.clear()
         category_id = request.POST.get('category_id_post')
@@ -70,23 +72,27 @@ def send_term(request):
                     'email': user_email
                 })
             
-            category_info = categories_work.get_category_info(category_id)
+            if source_id == "-1":
+                context["comment"] = "Пользователь не найден"
+            else:
+                request.session['user_id'] = source_id
+                category_info = categories_work.get_category_info(category_id)
 
-            if category_info:
-                new_word_info = {
-                    'category_db_filename' : category_info['filename'],
-                    'word' : new_word,
-                    'definition': new_definition,
-                    'source_id': source_id
-                }
-                res = terms_work.add_term_to_db(new_word_info)
-                if res['success']:
-                    context["success"] = True
-                    context["comment"] = "Новое слово добавлено"
-                else: 
-                    context["comment"] = res["error_string"]
+                if category_info:
+                    new_word_info = {
+                        'category_db_filename' : category_info['filename'],
+                        'word' : new_word,
+                        'definition': new_definition,
+                        'source_id': source_id
+                    }
+                    res = terms_work.add_term_to_db(new_word_info)
+                    if res['success']:
+                        context["success"] = True
+                        context["comment"] = "Новое слово добавлено"
+                    else: 
+                        context["comment"] = res["error_string"]
         request.session['send_term_response'] = context
-        return redirect(f"/add-term?category_id={category_id}")
+        return redirect(f"/add-term?category_id={category_id}#input_place")
     else:
         return redirect(f"/add-term")
 
@@ -120,7 +126,10 @@ def send_new_category(request):
                 'name': user_name,
                 'email': user_email
             })
-            if source_id > 0:
+            if source_id == "-1":
+                context["comment"] = "Пользователь не найден"
+            else:
+                request.session['user_id'] = source_id
                 res = categories_work.add_new_category({'id': "-1",
                                             'name': new_categoty_name,
                                             'filename': "", 
@@ -141,6 +150,9 @@ def send_new_category(request):
 
 def add_new_category(request):
     context = request.session.pop("send_category_response", {}) 
+    user_id = request.session.get("user_id", "")
+    if user_id:
+        context['user_info'] = sourses_work.get_source_info(user_id)
     return render(request, "new_category.html", context)
 
 def show_stats(request):
