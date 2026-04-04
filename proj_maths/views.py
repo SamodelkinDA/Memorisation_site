@@ -1,3 +1,5 @@
+""" Модуль рендера страниц сайта, кроме игровых страниц """
+
 from django.shortcuts import redirect, render
 from django.core.cache import cache
 from . import terms_work
@@ -6,37 +8,27 @@ from . import sourses_work
 
 
 def index(request):
+    """ Главная страница """
     return render(request, "index.html")
 
 
 def add_term(request):
-    category_id = request.GET.get('category_id')
+    """ Страница добавления новой карточки """
+    category_id = request.GET.get('category_id', '')
     categories = categories_work.get_list_of_categories()
-    if not categories:
-        terms = []
-        context = {
-            'terms': terms,
-            'categories': categories,
-            'selected_category_info': {},
-        }
-        return render(request, 'term_add.html', context)
-    
-    context = request.session.pop("send_term_response", {})
-    user_id = request.session.get("user_id", "")
-    if user_id:
-        context['user_info'] = sourses_work.get_source_info(user_id)
-
-    # Если не определена выбранная категория
-    if not (category_id and category_id != ''):
-        category_id = "1"
 
     selected_category_info = categories_work.get_category_info(category_id)
 
     # Если выбранная категория не существует или не ликвидна
-    if not selected_category_info:
+    if categories and not selected_category_info:
         category_id = "1"
         selected_category_info = categories_work.get_category_info(category_id)
-    
+
+    context = {
+        'categories': categories,
+        'selected_category_info': selected_category_info,
+    }
+
     terms = terms_work.get_terms_in_category_for_table(selected_category_info)
     context = context | {
         'terms': terms,
@@ -47,6 +39,7 @@ def add_term(request):
 
 
 def send_term(request):
+    """ Процессинг добавления новой карточки """
     context = {}
     if request.method == "POST":
         cache.clear()
@@ -93,11 +86,11 @@ def send_term(request):
                         context["comment"] = res["error_string"]
         request.session['send_term_response'] = context
         return redirect(f"/add-term?category_id={category_id}#input_place")
-    else:
-        return redirect(f"/add-term")
+    return redirect("/add-term")
 
 
 def send_new_category(request):
+    """ Процессинг добавления новой категории """
     context = {}
     if request.method == "POST":
         cache.clear()
@@ -144,11 +137,11 @@ def send_new_category(request):
                 else: 
                     context["comment"] = res["error_string"]
         request.session['send_category_response'] = context
-        return redirect(f"/add-new-category")
-    else:
-        return redirect(f"/add-new-category")
+        return redirect("/add-new-category")
+    return redirect("/add-new-category")
 
 def add_new_category(request):
+    """ Станица добавления новой категории """
     context = request.session.pop("send_category_response", {}) 
     user_id = request.session.get("user_id", "")
     if user_id:
@@ -156,33 +149,27 @@ def add_new_category(request):
     return render(request, "new_category.html", context)
 
 def show_stats(request):
+    """ Страница статистики """
     user_id = request.session.get("user_id", "")
     stats = categories_work.get_categories_stats(user_id)
     return render(request, "stats.html", stats)
 
 def term_list_category_selection(request):
-    category_id = request.GET.get('category_id')
-    
+    """ Страница бибилиотеки """
+    category_id = request.GET.get('category_id', '')
     categories = categories_work.get_list_of_categories()
-    if not categories:
-        terms = []
-        context = {
-            'terms': terms,
-            'categories': categories,
-            'selected_category_info': {},
-        }
-        return render(request, 'term_list_category_selection.html', context)
-    
-    # Если не определена выбранная категория
-    if not (category_id and category_id != ''):
-        category_id = "1"
 
     selected_category_info = categories_work.get_category_info(category_id)
 
     # Если выбранная категория не существует или не ликвидна
-    if not selected_category_info:
+    if categories and not selected_category_info:
         category_id = "1"
         selected_category_info = categories_work.get_category_info(category_id)
+
+    context = {
+        'categories': categories,
+        'selected_category_info': selected_category_info,
+    }
     
     terms = terms_work.get_terms_in_category_for_table(selected_category_info)
     context = {

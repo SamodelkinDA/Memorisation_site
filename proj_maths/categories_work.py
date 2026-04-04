@@ -1,5 +1,6 @@
-
+""" Здесь содержатся все функции взаимодействия с таблицей biblios.csv в базе данных """
 def get_category_info(target_category_id : str = "1") -> dict:
+    """ Получение полей связанных с данной категорией """
     target_category_info = {}
     with open("./data/biblios.csv", "r", encoding="utf-8") as biblios_file:
         for line in biblios_file.readlines()[1:]:
@@ -13,19 +14,20 @@ def get_category_info(target_category_id : str = "1") -> dict:
                                         'word_title': word_title,
                                         'definition_title': definition_title,
                                         'sourse_id': sourse_id}
-    return target_category_info 
-    
+    return target_category_info
+
 def get_list_of_categories() -> list:
+    """ Получение названий всех активных категорий """
     categories = []
     with open("./data/biblios.csv", "r", encoding="utf-8") as biblios_file:
         for line in biblios_file.readlines()[1:]:
-            category_id, public_name, filename, available, \
-                  word_title, definition_title, sourse_id = line.split(";")
+            category_id, public_name, _ , available, _ = line.split(";")
             if available == "1":
                 categories.append((category_id, public_name))
     return categories
 
 def add_new_category(new_category_info : dict) -> dict:
+    """ Добавление новой категории в базу данных """
     result = {
         "success": True,
         "error_string" : ""
@@ -33,10 +35,8 @@ def add_new_category(new_category_info : dict) -> dict:
     max_category_id = 0
     with open("./data/biblios.csv", "r", encoding="utf-8") as biblios_file:
         for line in biblios_file.readlines()[1:]:
-            category_id, public_name, filename, available, \
-                    word_title, definition_title, sourse_id = line.split(";")
-            if int(category_id) > max_category_id:
-                max_category_id = int(category_id)
+            category_id, public_name, *_ = line.split(";")
+            max_category_id = max(max_category_id, int(category_id))
             if public_name == new_category_info['name']:
                 result = {
                     "success": False,
@@ -46,28 +46,29 @@ def add_new_category(new_category_info : dict) -> dict:
     if result['success']:
         with open("./data/biblios.csv", "a", encoding="utf-8") as biblios_file:
             biblios_file.write("\n" + f"{max_category_id + 1};{new_category_info['name']};" +
-                            f"{str(max_category_id + 1)};1;{new_category_info['word_title']};" +
-                                f"{new_category_info['definition_title']};{new_category_info['sourse_id']}")
-        with open(f'./data/{max_category_id + 1}.csv', 'x') as f:
+                    f"{str(max_category_id + 1)};1;{new_category_info['word_title']};" +
+                    f"{new_category_info['definition_title']};{new_category_info['sourse_id']}")
+        with open(f'./data/{max_category_id + 1}.csv', 'x', encoding="utf-8") as f:
             f.write("id;word;definition;sourse_id")
         result['category_id'] = f'{max_category_id + 1}'
     return result
 
 def get_categories_stats(user_id):
+    """ Статистика по категориям """
     categories_number = 0
     your_categories_number = 0
     cards_numbers = []
     with open("./data/biblios.csv", "r", encoding="utf-8") as bib_file:
         for line in bib_file.readlines()[1:]:
-            ategory_id, public_name, filename, available, \
-                  word_title, definition_title, sourse_id = line.split(";")
+            _, _, filename, available, \
+                  _, _, sourse_id = line.split(";")
             if available:
                 categories_number += 1
                 if user_id == sourse_id:
                     your_categories_number += 1
                 with open(f"./data/{filename}.csv", "r", encoding="utf-8") as category_file:
                     cards_numbers.append(len(category_file.readlines()) - 1)
-    
+
     stats = {
         "categories_number": categories_number,
         "your_categories_number": your_categories_number,
@@ -76,4 +77,3 @@ def get_categories_stats(user_id):
         "words_min": min(cards_numbers)
     }
     return stats
-
