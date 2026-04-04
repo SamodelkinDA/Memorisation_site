@@ -22,13 +22,13 @@ def pair_game(request):
         'selected_category_info': selected_category_info,
     }
 
-    pairs_to_use = terms_work.select_terms_for_game(selected_category_info)
-
     # Инициализируем игровое состояние в сессии
     if 'pair_game_state' not in request.session:
+        pairs_to_use = terms_work.select_terms_for_game(selected_category_info)
         game_state = initialize_game_state(pairs_to_use, selected_category_info['id'])
         request.session['pair_game_state'] = game_state
     elif request.session['pair_game_state']['category_id'] != selected_category_info['id']:
+        pairs_to_use = terms_work.select_terms_for_game(selected_category_info)
         game_state = initialize_game_state(pairs_to_use, selected_category_info['id'])
         request.session['pair_game_state'] = game_state
 
@@ -53,10 +53,25 @@ def pair_game(request):
             game_state = request.session['pair_game_state']
 
         elif action == 'reshaffle':
-            request.session['pair_game_state'] = initialize_game_state(
-                pairs_to_use, selected_category_info['id']
-                )
-            game_state = request.session['pair_game_state']
+            left_words = game_state['left_words']
+            for word in left_words:
+                word['status'] = 'active'
+            random.shuffle(left_words)
+            right_words = game_state['right_words']
+            for word in right_words:
+                word['status'] = 'active'
+            random.shuffle(right_words)
+            {
+                'active_pairs': len(right_words),
+                'errors': 0,
+                'left_words': left_words,
+                'right_words': right_words,
+                'left_id': '',
+                'right_id': '',
+                'message': "Давай! Вперед",
+                'current_st' : 'IDLE',  # варианты 'IDLE', 'CORRECT', 'ERROR',
+                'category_id': category_id
+            }
 
         elif action == 'quit':
             request.session.pop('pair_game_state')
@@ -150,13 +165,15 @@ def memo_game(request):
         'selected_category_info': selected_category_info,
     }
 
-    pairs_to_use = terms_work.select_terms_for_game(selected_category_info)
+    
 
     # Инициализируем игровое состояние в сессии
     if 'memo_game_state' not in request.session:
+        pairs_to_use = terms_work.select_terms_for_game(selected_category_info)
         game_state = initialize_memo_game_state(pairs_to_use, selected_category_info['id'])
         request.session['memo_game_state'] = game_state
     elif request.session['memo_game_state']['category_id'] != selected_category_info['id']:
+        pairs_to_use = terms_work.select_terms_for_game(selected_category_info)
         game_state = initialize_memo_game_state(pairs_to_use, selected_category_info['id'])
         request.session['memo_game_state'] = game_state
 
@@ -180,10 +197,22 @@ def memo_game(request):
             game_state = request.session['memo_game_state']
 
         elif action == 'reshaffle':
-            request.session['memo_game_state'] = initialize_memo_game_state(
-                pairs_to_use, selected_category_info['id']
-                )
-            game_state = request.session['memo_game_state']
+            cards = game_state['cards']
+            for card in cards:
+                card['status'] = 'active'
+            random.shuffle(cards)
+
+            game_state = {
+                'active_pairs': len(cards) // 2,
+                'errors': 0,
+                'cards': cards,
+                'id1': '',
+                'id2': '',
+                'message': "Давай! Вперед",
+                'current_st' : 'IDLE',  # варианты 'IDLE', 'CORRECT', 'ERROR',
+                'category_id': category_id
+            }
+            request.session['memo_game_state'] = game_state
 
         elif action == 'quit':
             request.session.pop('memo_game_state')
