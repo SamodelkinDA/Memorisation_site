@@ -13,6 +13,9 @@
 4. `python3 manage.py migrate`
 5. `python3 manage.py runserver`
 
+Для использования на локальном сервере можно в файле proj_maths/settings.py 
+Изменить значение DEBUG на False (30я строчка)
+
 ## Корректное хранение секретов и токенов
 
 Для загрузки секретов как переменных окружения используется библиотека [python-dotenv](https://pypi.org/project/python-dotenv/).
