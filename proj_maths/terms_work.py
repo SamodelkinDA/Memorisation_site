@@ -30,7 +30,8 @@ def select_terms_for_game(category_info : dict, max_number : int = 10):
     """ """
     terms = []
     with open(f"./data/{category_info['filename']}.csv", "r", encoding="utf-8") as f:
-        for line in random.sample(f.readlines()[1:], min(max_number, len(terms))):
+        lines = f.readlines()[1:]
+        for line in random.sample(lines, min(max_number, len(lines))):
             term_id, term, definition, _ = line.split(";")
             terms.append({'id': term_id, 'left': definition, 'right': term})
     return terms

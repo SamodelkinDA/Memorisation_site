@@ -21,7 +21,7 @@ def get_list_of_categories() -> list:
     categories = []
     with open("./data/biblios.csv", "r", encoding="utf-8") as biblios_file:
         for line in biblios_file.readlines()[1:]:
-            category_id, public_name, _ , available, _ = line.split(";")
+            category_id, public_name, _ , available, *_ = line.split(";")
             if available == "1":
                 categories.append((category_id, public_name))
     return categories
@@ -64,7 +64,7 @@ def get_categories_stats(user_id):
                   _, _, sourse_id = line.split(";")
             if available:
                 categories_number += 1
-                if user_id == sourse_id:
+                if user_id == sourse_id.strip():
                     your_categories_number += 1
                 with open(f"./data/{filename}.csv", "r", encoding="utf-8") as category_file:
                     cards_numbers.append(len(category_file.readlines()) - 1)
